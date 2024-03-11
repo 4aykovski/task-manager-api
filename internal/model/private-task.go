@@ -4,8 +4,7 @@ import "time"
 
 type PrivateTask struct {
 	Id          int
-	UserId      string
-	DeskId      int
+	CategoryId  int
 	Name        string
 	Description string
 	Status      bool
