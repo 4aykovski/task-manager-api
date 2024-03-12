@@ -1,0 +1,9 @@
+package types
+
+import "time"
+
+type Tokens struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    time.Time
+}
