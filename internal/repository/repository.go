@@ -7,6 +7,8 @@ var (
 	ErrUserNotFound                = errors.New("user not found")
 	ErrProjectAlreadyExists        = errors.New("project already exists")
 	ErrProjectNotFound             = errors.New("user not found")
+	ErrProjectMemberAlreadyExists  = errors.New("project member already exists")
+	ErrProjectMemberNotFound       = errors.New("project members not found")
 	ErrRefreshSessionAlreadyExists = errors.New("refresh session already exists")
 	ErrRefreshSessionNotFound      = errors.New("refresh session not found")
 )
