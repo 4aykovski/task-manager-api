@@ -10,4 +10,6 @@ type PrivateTask struct {
 	Status      bool
 	DateCreate  time.Time
 	Deadline    time.Time
+	UserId      string
+	BoardId     int
 }

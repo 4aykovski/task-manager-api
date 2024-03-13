@@ -15,4 +15,6 @@ var (
 	ErrPrivateBoardNotFound         = errors.New("private board not found")
 	ErrPrivateCategoryAlreadyExists = errors.New("private category already exists")
 	ErrPrivateCategoryNotFound      = errors.New("private category not found")
+	ErrPrivateTaskAlreadyExists     = errors.New("private task already exists")
+	ErrPrivateTaskNotFound          = errors.New("private task not found")
 )
