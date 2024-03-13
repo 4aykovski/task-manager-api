@@ -19,7 +19,7 @@ func NewPrivateBoardRepository(db *postgres.Postgres) *PrivateBoardRepository {
 	return &PrivateBoardRepository{db: db}
 }
 
-func (repo *PrivateBoardRepository) InsertPrivateBoard(ctx context.Context, board *model.PrivateBoard) error {
+func (repo *PrivateBoardRepository) CreatePrivateBoard(ctx context.Context, board *model.PrivateBoard) error {
 	const op = "internal.repository.postgres.privateboard.InsertPrivateBoard"
 	const insertPrivateBoardStmt = `INSERT INTO private_boards (name, color, user_id) 
 					VALUES ($1, $2, $3)`

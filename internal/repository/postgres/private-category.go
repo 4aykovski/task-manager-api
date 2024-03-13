@@ -19,7 +19,7 @@ func NewPrivateCategoryRepository(db *postgres.Postgres) *PrivateCategoryReposit
 	return &PrivateCategoryRepository{db: db}
 }
 
-func (repo *PrivateCategoryRepository) InsertPrivateCategory(ctx context.Context, category *model.PrivateCategory) error {
+func (repo *PrivateCategoryRepository) CreatePrivateCategory(ctx context.Context, category *model.PrivateCategory) error {
 	const op = "internal.repository.postgres.privateCategory.InsertPrivateCategory"
 	const insertPrivateCategoryStmt = `INSERT INTO private_categories (name, color, board_id)
 					VALUES ($1, $2, $3)`
