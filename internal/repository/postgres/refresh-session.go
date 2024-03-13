@@ -73,6 +73,49 @@ func (repo *RefreshSessionRepository) GetRefreshSessionWithToken(ctx context.Con
 	return &refreshSession, nil
 }
 
+func (repo *RefreshSessionRepository) GetRefreshSessions(ctx context.Context, userId string) ([]*model.RefreshSession, error) {
+	const op = "internal.repository.postgres.refreshSession.GetRefreshSessions"
+	const getRefreshSessionsStmt = `SELECT token, user_id, expires_in, fingerprint 
+									FROM refresh_sessions WHERE user_id = $1`
+
+	stmt, err := repo.db.PrepareContext(ctx, getRefreshSessionsStmt)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.QueryContext(ctx, userId)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	var refreshSessions []*model.RefreshSession
+	for rows.Next() {
+		var refreshSession model.RefreshSession
+		if err := rows.Scan(
+			&refreshSession.Token,
+			&refreshSession.UserId,
+			&refreshSession.ExpiresIn,
+			&refreshSession.Fingerprint,
+		); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+
+		refreshSessions = append(refreshSessions, &refreshSession)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if len(refreshSessions) == 0 {
+		return nil, repository.ErrRefreshSessionNotFound
+	}
+
+	return refreshSessions, nil
+}
+
 func (repo *RefreshSessionRepository) DeleteRefreshSession(ctx context.Context, token string) error {
 	const op = "internal.repository.postgres.refreshSession.DeleteRefreshSession"
 	const deleteRefreshSessionStmt = `DELETE FROM refresh_sessions WHERE token = $1`
