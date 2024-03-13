@@ -1,6 +1,6 @@
 package model
 
-type PrivateDesk struct {
+type PrivateBoard struct {
 	Id     int
 	Name   string
 	Color  string

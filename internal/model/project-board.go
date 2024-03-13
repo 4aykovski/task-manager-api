@@ -1,6 +1,6 @@
 package model
 
-type ProjectDesk struct {
+type ProjectBoard struct {
 	Id        int
 	Name      string
 	Color     string

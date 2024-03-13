@@ -11,4 +11,6 @@ var (
 	ErrProjectMemberNotFound       = errors.New("project members not found")
 	ErrRefreshSessionAlreadyExists = errors.New("refresh session already exists")
 	ErrRefreshSessionNotFound      = errors.New("refresh session not found")
+	ErrPrivateBoardAlreadyExists   = errors.New("private board already exists")
+	ErrPrivateBoardNotFound        = errors.New("private board not found")
 )
