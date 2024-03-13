@@ -1,0 +1,3914 @@
+openapi: 3.0.3
+info:
+  description: "rest api for task manager"
+  contact: { }
+  title: "Task Manager REST API"
+  version: 0.0.1
+servers:
+  - url: "http://localhost:8080/api/v0.0.1"
+    description: "dev server"
+paths:
+
+  # USERS
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: get all users
+      description: get all users
+      operationId: getAllUsers
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: successfully got users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: get one user
+      operationId: getUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get one user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  user:
+                    type: object
+                    example:
+                      $ref: "#/components/schemas/User"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: User not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - users
+      summary: delete one user
+      operationId: deleteUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete one user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: User not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - users
+      summary: update one user
+      operationId: updateUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+                login:
+                  type: string
+                  example: login
+                email:
+                  type: string
+                  example: example@gmail.com
+                password:
+                  type: string
+                  example: password12
+                about:
+                  type: string
+                  example: just user
+                language:
+                  type: string
+                  example: RU
+                theme:
+                  type: string
+                  enum:
+                    - dark
+                    - light
+      responses:
+        "200":
+          description: successfully update one user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  user:
+                    type: object
+                    example:
+                      $ref: "#/components/schemas/User"
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/tasks:
+    get:
+      tags:
+        - users
+      summary: get all user tasks
+      operationId: getUserTasks
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get tasks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  tasks:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Private_task"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - users
+      summary: create new user task
+      operationId: createUserTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                user_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully create new task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/tasks/{task_id}:
+    get:
+      tags:
+        - users
+      summary: get one user task
+      operationId: getUserTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully update task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  task:
+                    $ref: "#/components/schemas/Private_task"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - users
+      summary: update one user task
+      operationId: updateUserTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                user_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully update task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: user or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - users
+      summary: delete one user task
+      operationId: deleteUserTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/projects:
+    get:
+      tags:
+        - users
+      summary: get all user project
+      operationId: getUserProjects
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/projects/{project_id}:
+    get:
+      tags:
+        - users
+      summary: get one user project
+      operationId: getUserProject
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  project:
+                    $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/boards:
+    get:
+      tags:
+        - users
+      summary: get all user boards
+      operationId: getUseBoards
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  boards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Private_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - users
+      summary: create new user board
+      operationId: createUserBoard
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                user_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully create new user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/boards/{board_id}:
+    get:
+      tags:
+        - users
+      summary: get one user board
+      operationId: getUserBoard
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  board:
+                    $ref: '#/components/schemas/Private_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - users
+      summary: update one user board
+      operationId: updateUserBoard
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                user_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully update new user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - users
+      summary: delete one user board
+      operationId: deleteUserBoard
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+
+  /users/{user_id}/boards/{board_id}/categories:
+    get:
+      tags:
+        - users
+      summary: get all user categories on certain board
+      operationId: getUserBoardCategories
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user board categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Private_category'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - users
+      summary: create new user board category
+      operationId: createUserBoardCategory
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                board_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully create new user board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/{user_id}/boards/{board_id}/categories/{category_id}:
+    get:
+      tags:
+        - users
+      summary: get one user board
+      operationId: getUserBoardCategory
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get user board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  board:
+                    $ref: '#/components/schemas/Private_category'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - users
+      summary: update one user board category
+      operationId: updateUserBoardCategory
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                board_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully update new user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - users
+      summary: delete one user board category
+      operationId: deleteUserBoardCategory
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete user board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+  /users/{user_id}/boards/{board_id}/tasks:
+    get:
+      tags:
+        - projects
+      summary: get all tasks on user board
+      operationId: getUserBoardTasks
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get all user boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  boards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Private_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - projects
+      summary: update task on user board
+      operationId: updateUserBoardTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                user_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully update task on user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - projects
+      summary: delete task on user board
+      operationId: deleteUserBoardTask
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete task on user board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+  # USERS AUTH
+
+  /users/auth/signUp:
+    post:
+      tags:
+        - users
+      summary: register
+      description: register new user
+      operationId: userSignUp
+      security:
+        - { }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  example: ssff
+                email:
+                  type: string
+                  example: mail@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: succesfully created user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong input
+        "422":
+          description: user with this login or email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: User already exists
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /users/auth/signIn:
+    post:
+      tags:
+        - users
+      summary: login
+      description: takes user login and password, validate it and returns tokens pair
+      operationId: userSignIn
+      security:
+        - { }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  example: ssff
+                email:
+                  type: string
+                  example: mail@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: succesfully signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Successfully signed in
+                  accessToken:
+                    type: string
+                    example: JWTString
+                  refreshToken:
+                    type: string
+                    example: RANDOMSTRING
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING; Path=/api/v0.0.1/users/auth; HttpOnly; Secure
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong input
+        "407":
+          description: wrong credentails
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong credentials
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+      #  TODO: CHECK HOW TO ADD COOKIES
+
+
+  /users/auth/refresh:
+    post:
+      tags:
+        - users
+      summary: refresh tokens pair
+      operationId: userRefresh
+      security:
+        - { }
+      parameters:
+        - in: cookie
+          name: refresh_token
+          schema:
+            type: string
+            example: randomString
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  example: RANDOMSTRING1
+      responses:
+        "200":
+          description: successfully refreshed
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING2; Path=/api/v0.0.1/users/auth; HttpOnly; Secure;
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Successfully signed in
+                  accessToken:
+                    type: string
+                    example: JWTString
+                  refreshToken:
+                    type: string
+                    example: RANDOMSTRING
+        "400":
+          description: wrong input
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING2; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/api/v0.0.1/users/auth; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong input
+        "407":
+          description: wrong credentials
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING2; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/api/v0.0.1/users/auth; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong credentials
+        "500":
+          description: internal server error
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING2; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/api/v0.0.1/users/auth; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+  /users/auth/logout:
+    post:
+      tags:
+        - users
+      summary: logout
+      operationId: userLogout
+      security:
+        - { }
+      parameters:
+        - in: cookie
+          name: refresh_token
+          schema:
+            type: string
+            example: randomString
+      responses:
+        "200":
+          description: successfully logout
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refresh_token=RANDOMSTRING2; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/api/v0.0.1/users/auth; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Successfully logout
+                  accessToken:
+                    type: string
+                    example: JWTString
+                  refreshToken:
+                    type: string
+                    example: RANDOMSTRING
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong input
+        "407":
+          description: wrong credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Wrong credentials
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  # PROJECTS
+
+  /projects:
+    post:
+      tags:
+        - projects
+      summary: create new project
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: project
+                description:
+                  type: string
+                  example: my project
+                owner:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully create new project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}:
+    get:
+      tags:
+        - projects
+      summary: get one project
+      operationId: getProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get one project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  project:
+                    $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: user or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: user not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - projects
+      summary: update project
+      operationId: updateProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: project
+                description:
+                  type: string
+                  example: my project
+                owner:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully update project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - projects
+      summary: delete one project
+      operationId: deleteProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete one project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/tasks:
+    get:
+      tags:
+        - projects
+      summary: get all project tasks
+      operationId: getProjectTasks
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get all project tasks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project_task'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - projects
+      summary: create new project task
+      operationId: createProjectTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                project_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully create new project task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/tasks/{task_id}:
+    get:
+      tags:
+        - projects
+      summary: get one project task
+      operationId: getProjectTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get one project task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  item:
+                    $ref: '#/components/schemas/Private_task'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - projects
+      summary: update one project task
+      operationId: updateProjectTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                project_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully update one project task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - projects
+      summary: delete one project task
+      operationId: deleteProjectTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete one project task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/members:
+    get:
+      tags:
+        - projects
+      summary: get all project members
+      operationId: getProjectMember
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get all project members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - projects
+      summary: add new project member
+      operationId: addProjectMember
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully add new project member
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/boards:
+    get:
+      tags:
+        - projects
+      summary: get all project boards
+      operationId: getProjectBoards
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get all project boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  boards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - projects
+      summary: create new project board
+      operationId: createProjectBoard
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                project_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully create new project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/boards/{board_id}:
+    get:
+      tags:
+        - users
+      summary: get one project board
+      operationId: getProjectBoard
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  board:
+                    $ref: '#/components/schemas/Private_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - users
+      summary: update one project board
+      operationId: updateProjectBoard
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                user_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully update project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - users
+      summary: delete one project board
+      operationId: deleteProjectBoard
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+      
+
+
+  /projects/{project_id}/boards/{board_id}/categories:
+    get:
+      tags:
+        - projects
+      summary: get all project categories on certain board
+      operationId: getProjectBoardCategories
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get project board categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project_category'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    post:
+      tags:
+        - projects
+      summary: create new project board category
+      operationId: createProjectBoardCategory
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                board_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully create new project board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/boards/{board_id}/categories/{category_id}:
+    get:
+      tags:
+        - projects
+      summary: get one project board
+      operationId: getProjectBoardCategory
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get project board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  board:
+                    $ref: '#/components/schemas/Project_category'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - projects
+      summary: update one project board category
+      operationId: updateProjectBoardCategory
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: new board
+                color:
+                  type: string
+                  example: blue
+                board_id:
+                  type: string
+                  example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+      responses:
+        "200":
+          description: successfully update new project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - projects
+      summary: delete one project board category
+      operationId: deleteProjectBoardCategory
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete project board category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or board or category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/boards/{board_id}/tasks:
+    get:
+      tags:
+        - projects
+      summary: get all tasks on project board
+      operationId: getProjectBoardTasks
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get all project boards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  boards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project_board'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    put:
+      tags:
+        - projects
+      summary: update task on project board
+      operationId: updateProjectBoardTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my task
+                description:
+                  type: string
+                  example: do something
+                status:
+                  type: boolean
+                  example: true
+                deadline:
+                  type: string
+                  example: 24-02-2004
+                project_id:
+                  type: string
+                  example: 1
+                board_id:
+                  type: string
+                  example: 1
+      responses:
+        "200":
+          description: successfully update task on project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+    delete:
+      tags:
+        - projects
+      summary: delete task on project board
+      operationId: deleteProjectBoardTask
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully delete task on project board
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          description: wrong input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: wrong input
+        "404":
+          description: project or board not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+  /projects/{project_id}/owner:
+    get:
+      tags:
+        - projects
+      summary: get project owner
+      operationId: getProjectOwner
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successfully get project owner
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  owner:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: project or user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: project not found
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Error
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+
+
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: Error
+              error:
+                type: string
+                example: Unauthorized
+
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+        login:
+          type: string
+          example: login
+        email:
+          type: string
+          example: example@gmail.com
+        password:
+          type: string
+          example: password12
+        admin:
+          type: boolean
+          example: false
+        about:
+          type: string
+          example: just user
+        language:
+          type: string
+          example: RU
+        theme:
+          type: string
+          enum:
+            - dark
+            - light
+        register_date:
+          type: string
+          example: 17-09-2024
+        last_seen:
+          type: string
+          example: 17-09-2024T12:15:00
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: project
+        create_date:
+          type: string
+          example: 22-02-2004
+        description:
+          type: string
+          example: my project
+        owner:
+          type: string
+          example: 1cef9488-ba25-4830-a0d5-75a8d50cd92d
+    Project_board:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 01
+        name:
+          type: string
+          example: desc
+        color:
+          type: string
+          example: red
+        project_id:
+          type: string
+          example: 1
+    Project_task:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: my task
+        description:
+          type: string
+          example: do something
+        status:
+          type: boolean
+          example: true
+        create_date:
+          type: string
+          example: 22-02-2004
+        deadline:
+          type: string
+          example: 24-02-2004
+        project_id:
+          type: string
+          example: 1
+        board_id:
+          type: string
+          example: 1
+    Project_member:
+      type: object
+      properties:
+        project_id:
+          type: string
+          example: 1
+        user_id:
+          type: string
+          example: 1
+    Private_board:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 01
+        name:
+          type: string
+          example: desc
+        color:
+          type: string
+          example: red
+        user_id:
+          type: string
+          example: 1
+    Private_task:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: my task
+        description:
+          type: string
+          example: do something
+        status:
+          type: boolean
+          example: true
+        create_date:
+          type: string
+          example: 22-02-2004
+        deadline:
+          type: string
+          example: 24-02-2004
+        user_id:
+          type: string
+          example: 1
+        board_id:
+          type: string
+          example: 1
+    Private_category:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: example
+        color:
+          type: string
+          example: color
+        board_id:
+          type: string
+          example: 1
+    Project_category:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: example
+        color:
+          type: string
+          example: color
+        board_id:
+          type: string
+          example: 1
+
+
+security:
+  - bearerAuth: [ ]
