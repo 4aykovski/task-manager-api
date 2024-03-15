@@ -19,4 +19,6 @@ var (
 	ErrPrivateTaskNotFound          = errors.New("private task not found")
 	ErrProjectBoardAlreadyExists    = errors.New("project board already exists")
 	ErrProjectBoardNotFound         = errors.New("project board not found")
+	ErrProjectCategoryAlreadyExists = errors.New("project category already exists")
+	ErrProjectCategoryNotFound      = errors.New("project category not found")
 )
