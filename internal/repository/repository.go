@@ -21,4 +21,9 @@ var (
 	ErrProjectBoardNotFound         = errors.New("project board not found")
 	ErrProjectCategoryAlreadyExists = errors.New("project category already exists")
 	ErrProjectCategoryNotFound      = errors.New("project category not found")
+	ErrProjectTaskAlreadyExists     = errors.New("project task already exists")
+	ErrProjectTasksNotFound         = errors.New("project tasks not found")
+	ErrProjectTaskNotFound          = errors.New("project task not found")
 )
+
+// TODO: add unique violation error on update to every repository
